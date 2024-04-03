@@ -1,0 +1,108 @@
+%include "in_out.asm"
+;in reversebit we put bit 63 in bit 0 and vice versa
+;and 62 in 1 and 1 in 62
+;and 61 in 2 and 2 in 61 (r12 points to 61
+;and r13 points to 2)
+;and so on
+
+section .data
+	Msg	db	'Helo World!', 0
+
+section .bss
+
+section .text
+        global _start
+
+_start:
+	;mov	rsi,	Msg
+	;call	printString
+	call readNum   ;number is in rax
+	;call writeNum
+	mov r10 , rax ;saving the number in r10
+	call reversebit
+	mov rcx , rax ;the answer now is in rcx
+	;call writeNum
+	;here it will print the reverse number
+	;but we want the bits (0s and 1s)
+	;so we call function printt
+	call printt
+
+Exit:
+        mov     rax,    1
+        mov     rbx,    0
+        int     0x80
+
+reversebit:
+	xor r12 , r12 ;counter for bit from 0 to 31
+	mov r13 , 63 ;(64 bits from 0 to 63 . we will swtich bits number r8 with bit number r9)
+	xor r14 , r14  ;bit r12 pointing to
+	xor r15 , r15  ;bit r13 pointing to
+	
+	loop:
+		cmp r12 , r13
+		jg end
+		bt rax , r12 ;store value of bit number r12 of rax in CF
+		jc r14one
+		;if here then r14 would be 0
+		mov r14 , 0
+		afterr14:
+		
+		bt rax , r13 ;store value of bit number r13 of rax in CF
+		jc r15one
+		;if here then r15 would be 0
+		mov r15 , 0
+		afterr15:
+		
+		cmp r14 , r15
+		je areequal
+		;of here then bits are not equal and we will complement them
+		btc rax , r12
+		btc rax , r13
+		here:
+		inc r12
+		dec r13
+		jmp loop
+		
+
+r14one:
+	mov r14 , 1
+	jmp afterr14
+	
+r15one:
+	mov r15 , 1
+	jmp afterr15
+	
+areequal:
+	;if bits are equal there is no need to change the bits
+	jmp here		
+		
+end:
+	ret
+
+printt:
+	mov rbx , rax ;save the number in rbx
+	xor r8 , r8
+	mov r9 , 63
+	
+	loopp:
+		cmp r8,r9
+		jg end
+		bt rbx , r9  ;store the value of bit number r8 of rbx in CF
+		jc itsone
+		mov rax , 0
+		call writeNum
+		here2:
+		dec r9
+		jmp loopp
+
+
+itsone:
+	mov rax , 1
+	call writeNum
+	jmp here2
+			
+	
+	
+	
+
+

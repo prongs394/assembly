@@ -1,0 +1,30 @@
+;sum of digits of number in rax in rdx(answer in rdx)
+;give value in a in data section
+;start point is _start
+
+section .data
+	a dq 3297
+	
+section .text
+	global _start
+
+_start:
+	mov rax , a
+	call digitadd
+	
+exit:
+	mov rax,1
+	mov rbx,0
+	int 80h
+	
+digitadd:
+	mov r8,10
+	xor rbx,rbx ;rbx is 0
+	loop:
+		xor rdx,rdx
+		div r8 ;rax/r8 and remained is in rdx
+		add rbx , rdx ;in rbx we store sum by deviding to 10 and adding remainder to rbx
+		cmp rax , 0  ;if rax is 0 then it means rdx is yekan and we cant devide anymore
+		jne loop
+	mov rdx , rcx
+	ret

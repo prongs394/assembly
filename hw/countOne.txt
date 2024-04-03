@@ -1,0 +1,44 @@
+%include "in_out.asm"
+
+section .data
+
+section .bss
+
+section .text
+        global _start
+
+_start:
+	call readNum  ;number is in rax
+
+	call counteOne
+	mov rax , r8
+	call writeNum
+	
+
+Exit:
+        mov     rax,    1
+        mov     rbx,    0
+        int     0x80
+
+counteOne:
+	xor r8,r8 ;r8 will count 1s
+	mov rbx , rax ;number is in rbx
+	mov rcx , 64
+	mov rdx , 0
+	loop:
+		cmp rdx , rcx
+		je end
+		bt rbx , rcx
+		jc isone
+		here:
+		dec rcx
+		jmp loop
+
+end:
+	ret
+
+isone:
+	inc r8
+	jmp here
+		
+

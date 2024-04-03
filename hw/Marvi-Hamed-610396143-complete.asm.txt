@@ -1,0 +1,78 @@
+;is number in rax complete
+;give value in data section to a
+;start is _start
+
+section .data
+	a dq 12
+	one dq 1
+	zero dq 0
+	yes db 'Perfect',20
+	yeslen equ $-yes
+	no db 'Nope',20
+	nolen equ $-no
+section .text
+	global _start
+	
+_start:
+	mov rax,[a]
+	mov r9,[one]
+	mov r10,[zero] ;sum 
+	mov rcx , rax
+	sub rcx , r9 ;rcx = rax-1(initial number -1)
+	call complete
+	
+	
+exit:
+	mov rax,1
+	mov rbx,0
+	int 80h
+	
+complete:
+	mov r8,rax
+	loop:
+		xor rdx,rdx
+		div rcx ;rax/rcx and remainder is in rdx
+		cmp rdx,0
+		jne notzero ;if rdx is not 0 go to notzero
+		;here if rdx is 0 and rcx would be added to sum
+		add r10,rcx
+		cmp rcx , 1
+		jne finished ;if rcx is 1 then we check if sum is equal to rax
+		
+		sub rcx,r9
+		mov rax,r8
+		jmp loop
+		
+		notzero:
+			sub rcx,r9
+			mov rax , r8
+			jmp loop
+			
+		finished:
+			cmp r10 , r8 ;if r10 is equal to r8 then it is complete
+			je iscomplete
+			mov eax , 4
+			mov ebx , 1
+			mov ecx , no
+			mov edx , nolen
+			int 80h
+			
+			jmp end
+			
+			
+			
+		iscomplete: 
+			mov eax , 4
+			mov ebx , 1
+			mov ecx , yes
+			mov edx , yeslen
+			int 80h
+			
+	end:
+		ret
+			
+;not correct
+			
+			
+	
+	

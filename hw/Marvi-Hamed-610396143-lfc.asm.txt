@@ -1,0 +1,47 @@
+; give data of two numbers in data section to a and b
+; values in a and b would go to rax and rbx
+; lfc would be in rdx
+; start is: _start
+;a should be the bigger number
+
+section .data
+	a dq 42
+	b dq 12
+	counter dq 1
+	one dq 1
+	
+section .text
+	global _start
+	
+_start:
+	mov rax,[a]
+	mov rbx,[b]
+	mov rcx,[counter]
+	mov r10 , [one]
+	call lfc
+	
+exit:
+	mov rax,1
+	mov rbx,0
+	int 80h
+	
+lfc:
+	mov r8,rax 
+	mov r9,rbx
+	loop:
+		xor rdx,rdx ;to clear the register
+		mul rcx ;rax = rcx(counter)*rax
+		div rbx; rax/rbx and remainder would be in rdx
+		cmp rdx,0
+		jne notzero   ;if rdx is not 0 go to notzero
+		;come here if rdx is 0 so then current rax is answer
+		mov rdx , rax ;rdx is answer
+		jmp end
+		notzero:
+			add rcx , r10 ;add one to the counter
+			mov rax , r8  ; rax would be its initial value
+		
+	
+	end:
+		ret
+

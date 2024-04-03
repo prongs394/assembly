@@ -1,0 +1,64 @@
+;number in rax, sum of even and odd digits in rbx and rdx
+;give value in section data
+;start point is _start
+;1122 : rbx=4 rdx=2
+
+section .data
+	a dq 79134
+	two dq 2
+	
+section .text
+	global _start
+	
+_start:
+	mov rax , [a]
+	mov r15 , [two]
+	call digitaddeo
+	
+exit:
+	mov rax,1
+	mov rbx,0
+	int 80h
+	
+digitaddeo:
+	mov r11 , rax ;to store rax
+	xor rcx,rcx ;(rcx to store odd and in the end put it in rdx)
+	mov r8,10
+	loop:
+		xor rdx,rdx
+		div r8 ; rax = rax/r8 and remainder is in rdx
+		mov r11 , rax ;to store rax
+		;we need to decide whether the remainder in rdx is odd or even
+		mov r9 , rdx
+		mov r10 , rdx
+		mov rax , rdx
+		div r15 ;rax = rax/2 and remainder is in rdx if rdx is 1 then digit is odd if its 0 digit is even
+		cmp rdx , 0
+		je even
+		
+		;odd
+		add rdx , r9 ;rcx=rcx+r9 (odd)
+		jmp continue
+		even:
+			add rbx , r9 ;rbx=rbx+r9 (even)
+			jmp continue
+		continue:
+		;now that we stored to digit in rbx or rdx we need
+		;to check whether it was the last digit or not
+		cmp r11 , 0 ;r11 had stored the quotient in it
+		;if r11 is 0 then it was the last digit (yekan)
+		jne loop
+		mov rdx , rcx
+		;rbx already has even in it
+		ret
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+		

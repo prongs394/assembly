@@ -1,0 +1,94 @@
+;is number in rax prime?
+;give data in a in data section
+;start point in _start
+
+section .data
+	a dq 8
+	sum dq 0
+	one dq 1
+	yes db 'Yes',20
+	yeslen equ $-yes
+	no db 'No',20
+	nolen equ $-no
+	
+	
+section .text
+	global _start
+	
+_start:
+	mov rax,[a]
+	mov rcx,[sum] ;if sum is 2 then rax is prime
+	mov r8,rax
+	mov rbx,rax
+	mov r9,[one]
+	call prime
+	
+exit:
+	mov rax,1
+	mov rbx,0
+	int 80h
+	
+prime:
+	loop:
+		xor rdx , rdx
+		div rbx ; rax/rbx and remainder is in rdx
+		;if rdx is 0 then rcx = rcx + 1
+		cmp rdx,0
+		jne notzero ;if remainder is not zero go to notzero
+		;here if remainder is 0:
+		add rcx , r9
+		cmp rbx , 1 ;if rbx is one then we check whether rcx is 2 or not
+		je check
+		
+		notzero:
+			sub rbx , r9 ;rbx = rbx - 1
+			jmp loop
+			
+		check:
+			cmp rcx , 2
+			jne notprime
+			;here if rcx==2
+			;print prime
+				mov eax , 4
+				mov ebx , 1
+				mov ecx , yes
+				mov edx , yeslen
+				int 80h
+			
+			jmp end
+			
+		notprime:
+		;print notprime
+			mov eax , 4
+			mov ebx , 1
+			mov ecx , no
+			mov edx , nolen
+			int 80h
+		
+		jmp end
+		
+		
+	end:
+		ret
+		
+			
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

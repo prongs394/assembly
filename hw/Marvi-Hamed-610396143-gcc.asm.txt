@@ -1,0 +1,88 @@
+; give data of two numbers in data section to a and b
+; values in a and b would go to rax and rbx
+;gcc would be in rdx
+;start is: _start
+;a should be bigger than b
+
+section .data
+	a dq 12
+	b dq 9
+	one dq 1
+	
+section .text
+	global _start
+	
+_start:
+	mov rax,[a]
+	mov rbx,[b]
+	mov rcx,rax
+	mov r10,[one]
+	call gcc
+	
+exit:
+	mov rax,1
+	mov rbx,0
+	int 80h
+	
+gcc:	
+	mov r8,rax
+	mov r9,rbx
+	loop:
+		xor rdx,rdx
+		div rcx ;rax/rcx and remainder is in rdx
+		cmp rdx,0
+		jne notzeroa ;if rdx is not 0 go to notzeroa
+		;here if rdx is 0 
+		xor rdx,rdx
+		mov rax,r9 ;rax is initial value for rbx
+		div rcx ; rax(rbxvalue)/rcx and remainder is in rdx
+		cmp rdx,0
+		jne notzerob ;if rdx is not 0 go to notzerob
+		;here if rdx is 0 and current rcx is answer
+		mov rdx , rcx
+		jmp end
+		
+		
+
+		notzeroa:
+			sub rcx , r10
+			mov rax , r8
+			mov rbx , r9
+			jmp loop
+			
+		notzerob:
+			sub rcx , r10
+			mov rax , r8
+			mov rbx , r9
+			jmp loop
+			
+		
+		
+		
+	end:
+		ret
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

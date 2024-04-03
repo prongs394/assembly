@@ -1,0 +1,116 @@
+%include "in_out.asm"
+
+section .data
+
+
+section .bss
+	n: resq 1
+	q: resq 1
+	array: resq 200
+	query: resq 200
+section .text
+        global _start
+
+_start:
+	call readNum
+	mov [n],rax  ;reading n
+	;mov rax,[n]
+	;call writeNum
+	;call newLine
+	call readarray
+	afterreadarray:
+	
+	;mov rax,[array]
+	;call writeNum
+	;call newLine
+	;mov rax,[array+8]
+	;call writeNum
+	;call newLine
+	;mov rax,[array+16]
+	;call writeNum
+	;call newLine
+
+	mov [n],rcx
+	;mov rax,[n]
+	;call writeNum
+	;call newLine
+	;now we have n numbers in array
+	
+	;reading q:
+	call readNum
+	mov [q],rax
+	call readquery
+	afterreadquery:
+	;mov rax,[query+8]
+	;call writeNum
+	;call newLine
+	;now in query we have q numbers
+
+;------------ input finished here ----------
+	
+
+	mov r8,0	;r8 is index low
+	mov r9,[n]	;r9 is index high
+	dec r9	
+	call bs ;binary search
+
+
+	
+	
+	
+Exit:
+        mov     rax,    1
+        mov     rbx,    0
+        int     0x80
+readarray:
+	xor rcx,rcx ;counter
+	mov rdx,[n]
+	;mov rax,1000
+	;call writeNum
+	;call newLine
+	loopread:
+		;mov rax , 999
+		;call writeNum
+		;call newLine
+		call readNum
+		mov [array+rcx*8],rax
+		inc rcx
+		cmp rcx,rdx
+		je afterreadarray
+		jmp loopread
+
+readquery:
+	xor rcx,rcx ;coutner
+	mov rdx,[q]
+	loopreadq:
+		call readNum
+		mov [query+rcx*8],rax
+		inc rcx
+		cmp rcx,rdx
+		je afterreadquery
+		jmp loopreadq
+bs:
+	;mov rax,1000
+	;call writeNum
+	;call newLine
+
+	mov r10,r8
+	mov r11,r9
+
+	add r10,r11
+	
+	mov rax , r10
+	call writeNum
+	mov rcx , 2
+	div rcx
+
+	call writeNum
+	call newLine
+
+	mov rax,999
+	call writeNum
+
+
+	jmp Exit
+	
+	

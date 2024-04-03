@@ -1,0 +1,63 @@
+%include "in_out.asm"
+
+section .data
+
+section .bss
+	str: resb 2
+
+section .text
+        global _start
+
+_start:
+	call readNum  
+	call writeNum
+	mov r8 , rax ;first number in r8
+	call readNum
+	call writeNum
+	mov r9 , rax ;second number in r9
+	for:
+		xor rsi,rsi
+		xor rax,rax
+		call getc
+		cmp al,0xA
+		je out
+		mov [str+rsi],al
+		inc rsi
+		jmp for
+	out:
+	mov rax , 654
+	call writeNum
+	mov rsi , str
+	call printString
+	
+	
+
+	
+
+Exit:
+        mov     rax,    1
+        mov     rbx,    0
+        int     0x80
+
+counteOne:
+	xor r8,r8 ;r8 will count 1s
+	mov rbx , rax ;number is in rbx
+	mov rcx , 64
+	mov rdx , 0
+	loop:
+		cmp rdx , rcx
+		je end
+		bt rbx , rcx
+		jc isone
+		here:
+		dec rcx
+		jmp loop
+
+end:
+	ret
+
+isone:
+	inc r8
+	jmp here
+		
+

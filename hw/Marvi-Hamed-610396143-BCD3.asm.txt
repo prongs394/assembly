@@ -1,0 +1,69 @@
+; start of program:   _start
+; baraye sadgan : 64 + 32 + 4
+; baraye dahgan : 8 + 2
+; baraye yekan : khodash
+; number is in ax
+; answer is in ax
+;example is 765
+
+
+section .bss
+	str: resb 16
+	
+section .text
+	global _start
+	
+_start:
+	
+	
+	;read and store the user input
+	mov ecx, str
+	mov edx, 16
+	mov eax, 3
+	mov ebx, 0
+	int 80h
+	
+	mov ax , [str]
+	
+	;baraye sadgan:
+	mov bx , ax         ; keeping the original number in bx
+	and ax , 0x0F00     ; to get sadgan for example if we have 765 we'll get 700
+	shr ax , 1
+	shr ax , 1            ;64
+	mov cx , ax
+	shr ax , 1            ;32
+	mov dx , ax
+	shr ax , 1
+	shr ax , 1
+	shr ax , 1            ;4
+	add cx , dx
+	add ax , cx           ;ax is 700 in binary
+	
+	;baraye dahgan:
+	mov cx , bx
+	and cx , 0x00F0    ;if initial number is 765 now cx is 60
+	shr cx , 1         ;8
+	mov dx , cx
+	shr cx , 1
+	shr cx , 1         ;2
+	add cx , dx        ;cx is 60 in binary
+	
+	;baraye yekan:
+	and bx , 0x000F    ;bx is 5 in binary
+	
+	;total sum of bx(5), cx(60) ,and ax(700) = 765 in binary
+	add ax , cx
+	add ax , bx         ;ax is answer
+	
+	
+
+	;exit code
+	mov eax, 1
+	mov ebx, 0
+	int 80h
+	
+	
+	
+	
+	
+	
